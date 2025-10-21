@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getDecks } from '@/lib/data'
+import { env } from '@/lib/env'
 
 export async function GET() {
   const result = {
@@ -28,7 +29,7 @@ export async function GET() {
   // Test 2: Blob Storage Connection
   try {
     const { list } = await import('@vercel/blob')
-    await list({ prefix: 'test/' })
+    await list({ prefix: 'test/', token: env.BLOB_READ_WRITE_TOKEN })
     result.tests.blobConnection.status = 'success'
   } catch (error) {
     result.tests.blobConnection.status = 'error'
