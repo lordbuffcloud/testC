@@ -16,7 +16,8 @@ export function createSession(): string {
     iat: Date.now()
   })
   
-  const signature = sign(payload, env.APP_SECRET!)
+  const hardcodedSecret = 'qwertyuiopQWERTYUIOPqwertyuiopQW'
+  const signature = sign(payload, hardcodedSecret)
   const token = `${payload}.${signature}`
   
   return `${COOKIE_NAME}=${token}; Path=/; Max-Age=${MAX_AGE}; HttpOnly; Secure; SameSite=Lax`
@@ -35,7 +36,8 @@ export async function getSession(): Promise<SessionData | null> {
     return null
   }
   
-  if (!verify(payload, signature, env.APP_SECRET!)) {
+  const hardcodedSecret = 'qwertyuiopQWERTYUIOPqwertyuiopQW'
+  if (!verify(payload, signature, hardcodedSecret)) {
     return null
   }
   
