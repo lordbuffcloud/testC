@@ -1,0 +1,36 @@
+# Flash Decks - Cursor Rules
+
+## Development Guidelines
+- Prefer small, reviewable diffs
+- Tests-first: write/adjust tests before/with implementation
+- No new dependencies or public API changes without explicit line in the PRD or this prompt
+- Ask at most 3 clarifiers if needed; don't block progress
+
+## Tech Stack
+- Next.js (App Router) + TypeScript
+- `@vercel/postgres` + `vitest` (only approved new deps)
+- No UI libraries beyond basic CSS modules
+
+## Authentication
+- Single password via env `APP_PASSWORD`
+- Sign cookies using HMAC with `APP_SECRET`
+- No third-party auth
+- Server actions only for sensitive operations
+- httpOnly, Secure cookies
+
+## Data Model
+- `decks(id, key, name)` - fixed 3 decks: patrol, ec, bdoc
+- `cards(id, deck_key, question, answer, created_at, updated_at, deleted_at null)`
+- Soft delete reserved for future use
+
+## Accessibility
+- Buttons properly labeled
+- Form fields associated with labels
+- Keyboard navigation support
+- Focus management
+
+## Security
+- Server-side password comparison only
+- Signed session cookies
+- Input validation and sanitization
+- SQL injection prevention via parameterized queries

@@ -1,0 +1,36 @@
+import type { Metadata } from 'next'
+import { logout } from '@/actions/auth'
+import './globals.css'
+
+export const metadata: Metadata = {
+  title: 'Flash Decks',
+  description: 'A minimal flash-card web app for studying',
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <header className="header">
+          <div className="container">
+            <h1>Flash Decks</h1>
+            <form action={logout}>
+              <button type="submit" className="logout-btn">
+                Logout
+              </button>
+            </form>
+          </div>
+        </header>
+        <main className="main">
+          <div className="container">
+            {children}
+          </div>
+        </main>
+      </body>
+    </html>
+  )
+}
