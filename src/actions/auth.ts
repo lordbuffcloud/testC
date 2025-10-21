@@ -10,10 +10,9 @@ export async function login(formData: FormData) {
     const appPassword = process.env.APP_PASSWORD
     
     console.log('Login attempt:', {
-      providedPassword: password ? '***' : 'empty',
-      appPasswordSet: !!appPassword,
-      appPasswordLength: appPassword?.length || 0,
-      actualAppPassword: appPassword // Temporarily log the actual password for debugging
+      providedPassword: password,
+      appPassword: appPassword,
+      match: password === appPassword
     })
     
     if (!appPassword) {
@@ -21,10 +20,17 @@ export async function login(formData: FormData) {
       throw new Error('APP_PASSWORD environment variable not set')
     }
     
-    if (!password || password !== appPassword) {
+    if (!password) {
+      console.error('No password provided')
+      throw new Error('No password provided')
+    }
+    
+    if (password !== appPassword) {
       console.error('Password mismatch:', {
         provided: password,
-        expected: appPassword
+        expected: appPassword,
+        providedLength: password.length,
+        expectedLength: appPassword.length
       })
       throw new Error('Invalid password')
     }
