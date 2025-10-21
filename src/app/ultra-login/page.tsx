@@ -20,7 +20,7 @@ export default function UltraSimpleLogin() {
       // Simple redirect
       window.location.href = '/decks'
     } else {
-      setError('Invalid password. Try: clasby')
+        setError('Invalid password. Please try again.')
       setLoading(false)
     }
   }
@@ -34,7 +34,7 @@ export default function UltraSimpleLogin() {
       borderRadius: '8px'
     }}>
       <h1>Flash Decks Login</h1>
-      <p>Enter password: <strong>clasby</strong></p>
+      <p>Enter your password to access the flash cards.</p>
       
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '15px' }}>
