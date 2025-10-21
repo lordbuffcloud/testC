@@ -1,21 +1,27 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   
-  // Allow access to login page, static assets, and API routes
+  // Allow login pages and API routes
   if (
-    pathname.startsWith('/login') ||
-    pathname.startsWith('/_next') ||
+    pathname === '/simple-login' || 
+    pathname === '/login' || 
     pathname.startsWith('/api/') ||
+    pathname.startsWith('/_next') ||
     pathname.startsWith('/favicon.ico')
   ) {
     return NextResponse.next()
   }
   
-  // For now, allow all other routes to pass through
-  // We'll handle authentication in the components themselves
+  // Check for simple login cookie
+  const isLoggedIn = request.cookies.get('logged_in')?.value === 'true'
+  
+  if (!isLoggedIn) {
+    return NextResponse.redirect(new URL('/simple-login', request.url))
+  }
+  
   return NextResponse.next()
 }
 
