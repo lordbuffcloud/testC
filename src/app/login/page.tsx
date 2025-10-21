@@ -23,15 +23,6 @@ export default function LoginPage() {
           Login
         </button>
       </form>
-      
-      <div className="help-text">
-        <p><strong>Setup Instructions:</strong></p>
-        <ol>
-          <li>Make sure environment variables are set in Vercel</li>
-          <li>Add Vercel Postgres integration</li>
-          <li>Visit <code>/api/init</code> to initialize database</li>
-        </ol>
-      </div>
     </div>
   )
 }
