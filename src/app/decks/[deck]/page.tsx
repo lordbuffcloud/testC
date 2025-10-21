@@ -7,9 +7,11 @@ interface DeckPageProps {
 }
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export default async function DeckPage({ params }: DeckPageProps) {
   const { deck } = await params
+  // Add cache busting to ensure fresh data
   const deckData = await getDeck(deck)
   
   if (!deckData) {

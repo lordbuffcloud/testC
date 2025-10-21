@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import AddCardModal from '../../../components/AddCardModal'
 import EditCardModal from '../../../components/EditCardModal'
 
@@ -28,15 +29,20 @@ export default function DeckPageClient({ deckData }: DeckPageClientProps) {
   const [cards, setCards] = useState(deckData.cards)
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingCard, setEditingCard] = useState<Card | null>(null)
+  const router = useRouter()
 
   const handleCardAdded = () => {
-    // Refresh the page to get updated cards
-    window.location.reload()
+    // Use router refresh to get fresh data from server
+    router.refresh()
+    // Also close the modal
+    setShowAddModal(false)
   }
 
   const handleCardUpdated = () => {
-    // Refresh the page to get updated cards
-    window.location.reload()
+    // Use router refresh to get fresh data from server
+    router.refresh()
+    // Also close the modal
+    setEditingCard(null)
   }
 
   return (
