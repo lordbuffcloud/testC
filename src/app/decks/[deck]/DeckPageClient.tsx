@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import AddCardModal from '../../../components/AddCardModal'
 import EditCardModal from '../../../components/EditCardModal'
+import { deleteCard } from '@/actions/cards'
 
 interface Card {
   id: string
@@ -29,6 +30,7 @@ export default function DeckPageClient({ deckData }: DeckPageClientProps) {
   const [cards, setCards] = useState(deckData.cards)
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingCard, setEditingCard] = useState<Card | null>(null)
+  const [deletingCard, setDeletingCard] = useState<Card | null>(null)
   const router = useRouter()
 
   const handleCardAdded = () => {
@@ -43,6 +45,21 @@ export default function DeckPageClient({ deckData }: DeckPageClientProps) {
     router.refresh()
     // Also close the modal
     setEditingCard(null)
+  }
+
+  const handleDeleteCard = async (card: Card) => {
+    if (!confirm(`Are you sure you want to delete this card?\n\nQuestion: ${card.question}\nAnswer: ${card.answer}`)) {
+      return
+    }
+
+    try {
+      await deleteCard(card.id)
+      // Refresh the page to get updated data
+      router.refresh()
+    } catch (error) {
+      console.error('Error deleting card:', error)
+      alert('Failed to delete card. Please try again.')
+    }
   }
 
   return (
@@ -110,6 +127,20 @@ export default function DeckPageClient({ deckData }: DeckPageClientProps) {
                     }}
                   >
                     Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteCard(card)}
+                    style={{
+                      padding: '5px 10px',
+                      backgroundColor: '#dc3545',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '12px'
+                    }}
+                  >
+                    Delete
                   </button>
                 </div>
                 <div style={{ 

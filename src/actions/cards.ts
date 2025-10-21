@@ -1,6 +1,6 @@
 'use server'
 
-import { getCards, createCard as createCardData, updateCard as updateCardData } from '@/lib/data'
+import { getCards, createCard as createCardData, updateCard as updateCardData, deleteCard as deleteCardData } from '@/lib/data'
 
 export async function listCards(deckKey: string) {
   try {
@@ -62,5 +62,22 @@ export async function updateCard(id: string, fields: { question?: string; answer
   } catch (error) {
     console.error('Error updating card:', error)
     throw new Error('Failed to update card')
+  }
+}
+
+export async function deleteCard(id: string) {
+  try {
+    const success = await deleteCardData(id)
+    if (!success) {
+      throw new Error('Card not found')
+    }
+    return { success: true }
+  } catch (error) {
+    console.error('Error deleting card:', error)
+    console.error('Error details:', {
+      cardId: id,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error'
+    })
+    throw new Error(`Failed to delete card: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
 }

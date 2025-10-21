@@ -213,6 +213,48 @@ export async function updateCard(id: string, fields: { question?: string; answer
   return null
 }
 
+export async function deleteCard(id: string): Promise<boolean> {
+  try {
+    console.log('Deleting card:', id)
+    
+    // Find which deck this card belongs to
+    const decks = await getDecks()
+    for (const deck of decks) {
+      const cards = await getCards(deck.key)
+      const cardIndex = cards.findIndex(c => c.id === id)
+      
+      if (cardIndex !== -1) {
+        console.log('Found card in deck:', deck.key)
+        
+        // Remove the card from the array
+        cards.splice(cardIndex, 1)
+        console.log('Cards after deletion:', cards.length)
+        
+        // Save the updated cards
+        await put(`cards/${deck.key}/index.json`, JSON.stringify({ cards }), {
+          access: 'public',
+          contentType: 'application/json',
+          token: env.BLOB_READ_WRITE_TOKEN,
+          allowOverwrite: true
+        })
+        
+        console.log('Card deleted successfully:', id)
+        return true
+      }
+    }
+    
+    console.log('Card not found:', id)
+    return false
+  } catch (error) {
+    console.error('Error deleting card:', error)
+    console.error('Error details:', {
+      cardId: id,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error'
+    })
+    throw error
+  }
+}
+
 async function initializeData() {
   try {
     await put('decks/index.json', JSON.stringify({ decks: DEFAULT_DECKS }), {
