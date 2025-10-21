@@ -11,7 +11,7 @@ export async function GET() {
     tests: {
       blobImport: { status: 'pending', error: null as string | null },
       blobConnection: { status: 'pending', error: null as string | null },
-      blobQuery: { status: 'pending', error: null as string | null, data?: any },
+      blobQuery: { status: 'pending', error: null as string | null, data: undefined as any },
     }
   }
 
