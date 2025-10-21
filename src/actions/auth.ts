@@ -7,31 +7,13 @@ import { createSession, clearSession } from '@/lib/session'
 export async function login(formData: FormData) {
   try {
     const password = formData.get('password') as string
-    const appPassword = process.env.APP_PASSWORD
-    
-    console.log('Login attempt:', {
-      providedPassword: password,
-      appPassword: appPassword,
-      match: password === appPassword
-    })
-    
-    if (!appPassword) {
-      console.error('APP_PASSWORD environment variable not set')
-      throw new Error('APP_PASSWORD environment variable not set')
-    }
+    const hardcodedPassword = 'clasby'
     
     if (!password) {
-      console.error('No password provided')
       throw new Error('No password provided')
     }
     
-    if (password !== appPassword) {
-      console.error('Password mismatch:', {
-        provided: password,
-        expected: appPassword,
-        providedLength: password.length,
-        expectedLength: appPassword.length
-      })
+    if (password !== hardcodedPassword) {
       throw new Error('Invalid password')
     }
     
