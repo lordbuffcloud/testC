@@ -12,24 +12,8 @@ export async function GET() {
       }, { status: 400 })
     }
 
-    // Push the schema to the database
-    // This will create tables if they don't exist
-    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "decks" (
-      "id" TEXT NOT NULL PRIMARY KEY,
-      "key" TEXT NOT NULL UNIQUE,
-      "name" TEXT NOT NULL,
-      "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
-    )`
-    
-    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "cards" (
-      "id" TEXT NOT NULL PRIMARY KEY,
-      "deck_key" TEXT NOT NULL,
-      "question" TEXT NOT NULL,
-      "answer" TEXT NOT NULL,
-      "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      "updated_at" TIMESTAMP(3) NOT NULL,
-      "deleted_at" TIMESTAMP(3)
-    )`
+    // Test database connection
+    await prisma.$connect()
     
     // Seed the three decks
     await prisma.deck.upsert({
@@ -50,9 +34,22 @@ export async function GET() {
       create: { key: 'bdoc', name: 'BDOC' }
     })
     
-    return NextResponse.json({ ok: true, message: 'Database initialized successfully' })
+    // Test query
+    const deckCount = await prisma.deck.count()
+    
+    return NextResponse.json({ 
+      ok: true, 
+      message: 'Database initialized successfully',
+      deckCount,
+      decks: ['patrol', 'ec', 'bdoc']
+    })
   } catch (error) {
     console.error('Database initialization failed:', error)
-    return NextResponse.json({ error: 'Database initialization failed' }, { status: 500 })
+    return NextResponse.json({ 
+      error: 'Database initialization failed',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
+  } finally {
+    await prisma.$disconnect()
   }
 }

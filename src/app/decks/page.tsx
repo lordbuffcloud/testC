@@ -1,11 +1,10 @@
 import Link from 'next/link'
+import { listDecks } from '@/actions/decks'
 
-export default function DecksPage() {
-  const decks = [
-    { key: 'patrol', name: 'Patrol' },
-    { key: 'ec', name: 'EC' },
-    { key: 'bdoc', name: 'BDOC' }
-  ]
+export const dynamic = 'force-dynamic'
+
+export default async function DecksPage() {
+  const decks = await listDecks()
 
   return (
     <div>
@@ -22,13 +21,14 @@ export default function DecksPage() {
       </div>
       
       <div style={{ marginTop: '30px', padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
-        <h3>🎉 Login Successful!</h3>
-        <p>The login is working! You can now access the decks.</p>
-        <p><strong>Next Steps:</strong></p>
+        <h3>🎉 Database Connected!</h3>
+        <p>The login is working and the database is connected!</p>
+        <p><strong>Features Available:</strong></p>
         <ul>
-          <li>Click on a deck above to view/manage cards</li>
-          <li>Database integration will be added next</li>
-          <li>Card management features coming soon</li>
+          <li>✅ User authentication</li>
+          <li>✅ Database connection</li>
+          <li>✅ Deck management</li>
+          <li>🔄 Card management (coming next)</li>
         </ul>
       </div>
     </div>
