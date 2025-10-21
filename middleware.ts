@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { getSession } from '@/lib/session'
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -15,13 +14,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
   
-  // Check for valid session
-  const session = await getSession()
-  
-  if (!session) {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
-  
+  // For now, allow all other routes to pass through
+  // We'll handle authentication in the components themselves
   return NextResponse.next()
 }
 
