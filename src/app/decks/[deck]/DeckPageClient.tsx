@@ -61,8 +61,15 @@ export default function DeckPageClient({ deckData }: DeckPageClientProps) {
       console.log('Calling deleteCard server action...')
       await deleteCard(card.id)
       console.log('Delete successful, refreshing page...')
-      // Refresh the page to get updated data
+      
+      // Try multiple refresh methods to ensure we get updated data
       router.refresh()
+      
+      // Also try a hard refresh as backup
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
+      
     } catch (error) {
       console.error('Error deleting card:', error)
       alert('Failed to delete card. Please try again.')
