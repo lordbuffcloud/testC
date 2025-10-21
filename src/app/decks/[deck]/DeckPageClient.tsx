@@ -49,6 +49,7 @@ export default function DeckPageClient({ deckData }: DeckPageClientProps) {
 
   const handleDeleteCard = async (card: Card) => {
     console.log('Delete button clicked for card:', card.id)
+    console.log('Card details:', { id: card.id, question: card.question.substring(0, 50), answer: card.answer.substring(0, 50) })
     
     if (!confirm(`Are you sure you want to delete this card?\n\nQuestion: ${card.question}\nAnswer: ${card.answer}`)) {
       console.log('User cancelled deletion')
@@ -58,16 +59,24 @@ export default function DeckPageClient({ deckData }: DeckPageClientProps) {
     console.log('User confirmed deletion, proceeding...')
     
     try {
-      console.log('Calling deleteCard server action...')
-      await deleteCard(card.id)
-      console.log('Delete successful, refreshing page...')
+      console.log('Calling deleteCard server action with id:', card.id)
+      const result = await deleteCard(card.id)
+      console.log('Delete result from server action:', result)
       
-      // Use a simple hard refresh to ensure we get fresh data
-      window.location.reload()
+      if (result.success) {
+        console.log('Delete successful, refreshing page...')
+        // Use a simple hard refresh to ensure we get fresh data
+        window.location.reload()
+      } else {
+        console.error('Delete failed - no success returned')
+        alert('Failed to delete card. Please try again.')
+      }
       
     } catch (error) {
       console.error('Error deleting card:', error)
-      alert('Failed to delete card. Please try again.')
+      console.error('Error type:', typeof error)
+      console.error('Error message:', error instanceof Error ? error.message : 'Unknown error')
+      alert(`Failed to delete card: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
