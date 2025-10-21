@@ -48,7 +48,9 @@ export async function getDeck(key: string) {
     const deckNames: Record<string, string> = {
       patrol: 'Patrol',
       ec: 'EC',
-      bdoc: 'BDOC'
+      bdoc: 'BDOC',
+      alarms: 'Alarms',
+      armory: 'Armory'
     }
     
     if (deckNames[key]) {

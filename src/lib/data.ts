@@ -89,9 +89,18 @@ export async function getDecks(): Promise<Deck[]> {
       return DEFAULT_DECKS
     }
     
-    const response = await fetch(decksBlob.url)
+    const response = await fetch(decksBlob.url + '?t=' + Date.now())
     const data = await response.json()
-    return data.decks || DEFAULT_DECKS
+    const existingDecks = data.decks || []
+    
+    // Check if we need to update the deck configuration
+    if (existingDecks.length < DEFAULT_DECKS.length) {
+      console.log('Updating deck configuration with new decks...')
+      await initializeData()
+      return DEFAULT_DECKS
+    }
+    
+    return existingDecks
   } catch (error) {
     console.error('Error getting decks:', error)
     return DEFAULT_DECKS
