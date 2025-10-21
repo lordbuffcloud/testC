@@ -9,10 +9,10 @@ export async function GET() {
       vercelRegion: process.env.VERCEL_REGION,
     },
     variables: {
-      DATABASE_URL: {
-        present: !!process.env.DATABASE_URL,
-        length: process.env.DATABASE_URL?.length || 0,
-        prefix: process.env.DATABASE_URL?.substring(0, 20) + '...' || 'not set'
+      POSTGRES_URL: {
+        present: !!process.env.POSTGRES_URL,
+        length: process.env.POSTGRES_URL?.length || 0,
+        prefix: process.env.POSTGRES_URL?.substring(0, 20) + '...' || 'not set'
       },
       APP_PASSWORD: {
         present: !!process.env.APP_PASSWORD,
@@ -34,6 +34,6 @@ export async function GET() {
   }
 
   return NextResponse.json(envStatus, { 
-    status: envStatus.variables.DATABASE_URL.present ? 200 : 400 
+    status: envStatus.variables.POSTGRES_URL.present ? 200 : 400 
   })
 }
