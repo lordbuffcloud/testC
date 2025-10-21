@@ -9,11 +9,26 @@ export async function login(formData: FormData) {
     const password = formData.get('password') as string
     const hardcodedPassword = 'clasby'
     
+    console.log('Login attempt:', {
+      password: password,
+      hardcodedPassword: hardcodedPassword,
+      match: password === hardcodedPassword,
+      passwordLength: password?.length,
+      formDataKeys: Array.from(formData.keys())
+    })
+    
     if (!password) {
+      console.error('No password provided')
       throw new Error('No password provided')
     }
     
     if (password !== hardcodedPassword) {
+      console.error('Password mismatch:', {
+        provided: password,
+        expected: hardcodedPassword,
+        providedLength: password.length,
+        expectedLength: hardcodedPassword.length
+      })
       throw new Error('Invalid password')
     }
     
