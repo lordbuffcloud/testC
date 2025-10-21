@@ -1,13 +1,16 @@
 'use server'
 
-import { prisma } from '@/lib/prisma'
+import { getDecks, getDeck } from '@/lib/data'
 
 export async function listDecks() {
   try {
-    const decks = await prisma.deck.findMany({
-      orderBy: { createdAt: 'asc' }
-    })
-    return decks
+    const decks = await getDecks()
+    return decks.map(deck => ({
+      id: deck.id,
+      key: deck.key,
+      name: deck.name,
+      createdAt: new Date(deck.createdAt)
+    }))
   } catch (error) {
     console.error('Error listing decks:', error)
     // Return static decks as fallback
@@ -21,16 +24,24 @@ export async function listDecks() {
 
 export async function getDeck(key: string) {
   try {
-    const deck = await prisma.deck.findUnique({
-      where: { key },
-      include: {
-        cards: {
-          where: { deletedAt: null },
-          orderBy: { createdAt: 'asc' }
-        }
-      }
-    })
-    return deck
+    const deck = await getDeck(key)
+    if (!deck) return null
+    
+    return {
+      id: deck.id,
+      key: deck.key,
+      name: deck.name,
+      createdAt: new Date(deck.createdAt),
+      cards: deck.cards.map(card => ({
+        id: card.id,
+        deckKey: card.deckKey,
+        question: card.question,
+        answer: card.answer,
+        createdAt: new Date(card.createdAt),
+        updatedAt: new Date(card.updatedAt),
+        deletedAt: null
+      }))
+    }
   } catch (error) {
     console.error('Error getting deck:', error)
     // Return fallback deck data
