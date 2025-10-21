@@ -67,10 +67,14 @@ export async function updateCard(id: string, fields: { question?: string; answer
 
 export async function deleteCard(id: string) {
   try {
+    console.log('Server action deleteCard called with id:', id)
     const success = await deleteCardData(id)
+    console.log('Delete result:', success)
+    
     if (!success) {
       throw new Error('Card not found')
     }
+    console.log('Delete successful, returning success')
     return { success: true }
   } catch (error) {
     console.error('Error deleting card:', error)

@@ -48,12 +48,19 @@ export default function DeckPageClient({ deckData }: DeckPageClientProps) {
   }
 
   const handleDeleteCard = async (card: Card) => {
+    console.log('Delete button clicked for card:', card.id)
+    
     if (!confirm(`Are you sure you want to delete this card?\n\nQuestion: ${card.question}\nAnswer: ${card.answer}`)) {
+      console.log('User cancelled deletion')
       return
     }
 
+    console.log('User confirmed deletion, proceeding...')
+    
     try {
+      console.log('Calling deleteCard server action...')
       await deleteCard(card.id)
+      console.log('Delete successful, refreshing page...')
       // Refresh the page to get updated data
       router.refresh()
     } catch (error) {
