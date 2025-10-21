@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { logout } from '@/actions/auth'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -18,7 +17,7 @@ export default function RootLayout({
         <header className="header">
           <div className="container">
             <h1>Flash Decks</h1>
-            <form action={logout}>
+            <form action="/api/logout" method="post">
               <button type="submit" className="logout-btn">
                 Logout
               </button>
