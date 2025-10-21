@@ -34,20 +34,6 @@ body {
   font-weight: 600;
 }
 
-.logout-btn {
-  background: #dc3545;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.logout-btn:hover {
-  background: #c82333;
-}
-
 .main {
   padding: 2rem 0;
   min-height: calc(100vh - 80px);

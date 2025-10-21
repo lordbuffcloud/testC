@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import LogoutButton from '@/components/LogoutButton'
 
 export const metadata: Metadata = {
   title: 'Flash Decks',
@@ -24,7 +23,6 @@ export default function RootLayout({
         <header className="header">
           <div className="container">
             <h1>Flash Decks</h1>
-            <LogoutButton />
           </div>
         </header>
         <main className="main">
