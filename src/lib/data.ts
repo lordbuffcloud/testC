@@ -239,17 +239,6 @@ export async function deleteCard(id: string): Promise<boolean> {
         })
         
         console.log('Card deleted successfully:', id)
-        
-        // Verify the deletion by checking if the card still exists
-        const verifyCards = await getCards(deck.key)
-        const stillExists = verifyCards.find(c => c.id === id)
-        if (stillExists) {
-          console.error('Card still exists after deletion!', id)
-          return false
-        } else {
-          console.log('Card deletion verified:', id)
-        }
-        
         return true
       }
     }
