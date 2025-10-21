@@ -21,15 +21,8 @@ export default async function DecksPage() {
       </div>
       
       <div style={{ marginTop: '30px', padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
-        <h3>🎉 Database Connected!</h3>
-        <p>The login is working and the database is connected!</p>
-        <p><strong>Features Available:</strong></p>
-        <ul>
-          <li>✅ User authentication</li>
-          <li>✅ Database connection</li>
-          <li>✅ Deck management</li>
-          <li>🔄 Card management (coming next)</li>
-        </ul>
+        <h3>📚 Flash Cards Ready!</h3>
+        <p>Select a deck above to start managing your flash cards.</p>
       </div>
     </div>
   )
