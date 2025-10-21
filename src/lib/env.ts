@@ -1,11 +1,12 @@
 export const env = {
   APP_PASSWORD: process.env.APP_PASSWORD,
-  APP_SECRET: process.env.APP_SECRET
+  APP_SECRET: process.env.APP_SECRET,
+  DATABASE_URL: process.env.DATABASE_URL
 }
 
 // Validate required environment variables only at runtime
 function validateEnv() {
-  const required = ['APP_PASSWORD', 'APP_SECRET'] as const
+  const required = ['APP_PASSWORD', 'APP_SECRET', 'DATABASE_URL'] as const
   
   for (const key of required) {
     if (!process.env[key]) {
