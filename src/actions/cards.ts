@@ -34,7 +34,14 @@ export async function createCard(deckKey: string, question: string, answer: stri
     }
   } catch (error) {
     console.error('Error creating card:', error)
-    throw new Error('Failed to create card')
+    console.error('Error details:', {
+      deckKey,
+      question: question.substring(0, 50),
+      answer: answer.substring(0, 50),
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      errorStack: error instanceof Error ? error.stack : undefined
+    })
+    throw new Error(`Failed to create card: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
 }
 

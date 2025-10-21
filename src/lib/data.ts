@@ -144,25 +144,45 @@ export async function getCards(deckKey: string): Promise<Card[]> {
 }
 
 export async function createCard(deckKey: string, question: string, answer: string): Promise<Card> {
-  const newCard: Card = {
-    id: Date.now().toString(),
-    deckKey,
-    question,
-    answer,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+  try {
+    console.log('Creating card:', { deckKey, questionLength: question.length, answerLength: answer.length })
+    
+    const newCard: Card = {
+      id: Date.now().toString(),
+      deckKey,
+      question,
+      answer,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+    
+    console.log('Getting existing cards for deck:', deckKey)
+    const cards = await getCards(deckKey)
+    console.log('Existing cards count:', cards.length)
+    
+    cards.push(newCard)
+    console.log('Cards after adding new card:', cards.length)
+    
+    console.log('Saving cards to blob storage...')
+    await put(`cards/${deckKey}/index.json`, JSON.stringify({ cards }), {
+      access: 'public',
+      contentType: 'application/json',
+      token: env.BLOB_READ_WRITE_TOKEN
+    })
+    
+    console.log('Card created successfully:', newCard.id)
+    return newCard
+  } catch (error) {
+    console.error('Error in createCard:', error)
+    console.error('Error details:', {
+      deckKey,
+      questionLength: question.length,
+      answerLength: answer.length,
+      tokenPresent: !!env.BLOB_READ_WRITE_TOKEN,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error'
+    })
+    throw error
   }
-  
-  const cards = await getCards(deckKey)
-  cards.push(newCard)
-  
-  await put(`cards/${deckKey}/index.json`, JSON.stringify({ cards }), {
-    access: 'public',
-    contentType: 'application/json',
-    token: env.BLOB_READ_WRITE_TOKEN
-  })
-  
-  return newCard
 }
 
 export async function updateCard(id: string, fields: { question?: string; answer?: string }): Promise<Card | null> {
