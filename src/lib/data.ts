@@ -21,7 +21,9 @@ export interface Card {
 const DEFAULT_DECKS: Deck[] = [
   { id: 'patrol', key: 'patrol', name: 'Patrol', createdAt: new Date().toISOString() },
   { id: 'ec', key: 'ec', name: 'EC', createdAt: new Date().toISOString() },
-  { id: 'bdoc', key: 'bdoc', name: 'BDOC', createdAt: new Date().toISOString() }
+  { id: 'bdoc', key: 'bdoc', name: 'BDOC', createdAt: new Date().toISOString() },
+  { id: 'alarms', key: 'alarms', name: 'Alarms', createdAt: new Date().toISOString() },
+  { id: 'armory', key: 'armory', name: 'Armory', createdAt: new Date().toISOString() }
 ]
 
 const PATROL_CARDS: Card[] = [
