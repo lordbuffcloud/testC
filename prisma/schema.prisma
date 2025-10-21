@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Deck {
+  id         String   @id @default(cuid())
+  key         String   @unique
+  name        String
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  cards       Card[]
+  
+  @@map("decks")
+}
+
+model Card {
+  id         String   @id @default(cuid())
+  deckKey    String   @map("deck_key")
+  question   String
+  answer     String
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  deletedAt  DateTime? @map("deleted_at")
+  
+  deck       Deck     @relation(fields: [deckKey], references: [key], onDelete: Cascade)
+  
+  @@map("cards")
+}

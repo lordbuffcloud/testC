@@ -1,30 +1,39 @@
 'use server'
 
-import { query } from '@/lib/db'
-import { randomUUID } from 'crypto'
+import { prisma } from '@/lib/prisma'
 import { validateCard } from '@/lib/validators'
 
 export interface Card {
   id: string
-  deck_key: string
+  deckKey: string
   question: string
   answer: string
-  created_at: string
-  updated_at: string
-  deleted_at: string | null
+  createdAt: string
+  updatedAt: string
+  deletedAt: string | null
 }
 
 export async function listCards(deckKey: string): Promise<Card[]> {
-  const cards = await query<Card>(
-    'SELECT * FROM cards WHERE deck_key = $1 AND deleted_at IS NULL ORDER BY created_at',
-    [deckKey]
-  )
-  return cards
+  const cards = await prisma.card.findMany({
+    where: {
+      deckKey,
+      deletedAt: null
+    },
+    orderBy: { createdAt: 'asc' }
+  })
+  
+  return cards.map(card => ({
+    id: card.id,
+    deckKey: card.deckKey,
+    question: card.question,
+    answer: card.answer,
+    createdAt: card.createdAt.toISOString(),
+    updatedAt: card.updatedAt.toISOString(),
+    deletedAt: card.deletedAt?.toISOString() || null
+  }))
 }
 
 export async function createCard(deckKey: string, question: string, answer: string): Promise<Card> {
-  const id = randomUUID()
-  
   // Validate input
   const validation = validateCard({ question, answer })
   if (!validation.ok) {
@@ -32,35 +41,37 @@ export async function createCard(deckKey: string, question: string, answer: stri
     throw new Error(errors)
   }
   
-  await query(
-    'INSERT INTO cards (id, deck_key, question, answer) VALUES ($1, $2, $3, $4)',
-    [id, deckKey, question.trim(), answer.trim()]
-  )
+  const card = await prisma.card.create({
+    data: {
+      deckKey,
+      question: question.trim(),
+      answer: answer.trim()
+    }
+  })
   
-  const cards = await query<Card>('SELECT * FROM cards WHERE id = $1', [id])
-  return cards[0]
+  return {
+    id: card.id,
+    deckKey: card.deckKey,
+    question: card.question,
+    answer: card.answer,
+    createdAt: card.createdAt.toISOString(),
+    updatedAt: card.updatedAt.toISOString(),
+    deletedAt: card.deletedAt?.toISOString() || null
+  }
 }
 
 export async function updateCard(id: string, fields: { question?: string; answer?: string }): Promise<Card> {
-  const updates: string[] = []
-  const params: any[] = []
-  let paramIndex = 1
+  const updates: any = {}
   
   if (fields.question !== undefined) {
-    const trimmedQuestion = fields.question.trim()
-    updates.push(`question = $${paramIndex}`)
-    params.push(trimmedQuestion)
-    paramIndex++
+    updates.question = fields.question.trim()
   }
   
   if (fields.answer !== undefined) {
-    const trimmedAnswer = fields.answer.trim()
-    updates.push(`answer = $${paramIndex}`)
-    params.push(trimmedAnswer)
-    paramIndex++
+    updates.answer = fields.answer.trim()
   }
   
-  if (updates.length === 0) {
+  if (Object.keys(updates).length === 0) {
     throw new Error('No fields to update')
   }
   
@@ -73,14 +84,18 @@ export async function updateCard(id: string, fields: { question?: string; answer
     }
   }
   
-  updates.push(`updated_at = now()`)
-  params.push(id)
+  const card = await prisma.card.update({
+    where: { id },
+    data: updates
+  })
   
-  await query(
-    `UPDATE cards SET ${updates.join(', ')} WHERE id = $${paramIndex}`,
-    params
-  )
-  
-  const cards = await query<Card>('SELECT * FROM cards WHERE id = $1', [id])
-  return cards[0]
+  return {
+    id: card.id,
+    deckKey: card.deckKey,
+    question: card.question,
+    answer: card.answer,
+    createdAt: card.createdAt.toISOString(),
+    updatedAt: card.updatedAt.toISOString(),
+    deletedAt: card.deletedAt?.toISOString() || null
+  }
 }

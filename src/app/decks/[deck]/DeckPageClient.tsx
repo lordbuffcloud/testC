@@ -10,16 +10,16 @@ interface DeckPageClientProps {
     id: string
     key: string
     name: string
-    created_at: string
+    createdAt: string
   }
   cards: Array<{
     id: string
-    deck_key: string
+    deckKey: string
     question: string
     answer: string
-    created_at: string
-    updated_at: string
-    deleted_at: string | null
+    createdAt: string
+    updatedAt: string
+    deletedAt: string | null
   }>
   deckKey: string
 }
