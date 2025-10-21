@@ -227,12 +227,15 @@ export async function deleteCard(id: string): Promise<boolean> {
       
       if (cardIndex !== -1) {
         console.log('Found card in deck:', deck.key)
+        console.log('Card to delete:', { id, question: cards[cardIndex].question.substring(0, 50) })
         
         // Remove the card from the array
         cards.splice(cardIndex, 1)
         console.log('Cards after deletion:', cards.length)
+        console.log('Cards array after deletion:', cards.map(c => ({ id: c.id, question: c.question.substring(0, 30) })))
         
         // Save the updated cards
+        console.log('Saving updated cards to blob storage...')
         await put(`cards/${deck.key}/index.json`, JSON.stringify({ cards }), {
           access: 'public',
           contentType: 'application/json',
@@ -241,6 +244,17 @@ export async function deleteCard(id: string): Promise<boolean> {
         })
         
         console.log('Card deleted successfully:', id)
+        
+        // Verify the save by reading back the data
+        console.log('Verifying deletion by reading blob storage...')
+        const verifyBlob = await list({ prefix: `cards/${deck.key}/`, token: env.BLOB_READ_WRITE_TOKEN })
+        const verifyCardsBlob = verifyBlob.blobs.find(b => b.pathname === `cards/${deck.key}/index.json`)
+        if (verifyCardsBlob) {
+          const verifyResponse = await fetch(verifyCardsBlob.url + '?t=' + Date.now())
+          const verifyData = await verifyResponse.json()
+          console.log('Verified cards in blob:', verifyData.cards?.length || 0, 'cards')
+        }
+        
         return true
       }
     }
