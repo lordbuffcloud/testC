@@ -4,21 +4,24 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   
-  // Allow login pages and API routes
+  // Allow all API routes, static files, and login pages
   if (
-    pathname === '/simple-login' || 
-    pathname === '/login' || 
     pathname.startsWith('/api/') ||
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/favicon.ico')
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/favicon') ||
+    pathname === '/simple-login' ||
+    pathname === '/login' ||
+    pathname === '/login-test' ||
+    pathname === '/cookie-test'
   ) {
     return NextResponse.next()
   }
   
-  // Check for simple login cookie
+  // Check for login cookie
   const isLoggedIn = request.cookies.get('logged_in')?.value === 'true'
   
-  if (!isLoggedIn) {
+  // If not logged in and trying to access protected route, redirect to login
+  if (!isLoggedIn && pathname !== '/simple-login') {
     return NextResponse.redirect(new URL('/simple-login', request.url))
   }
   
