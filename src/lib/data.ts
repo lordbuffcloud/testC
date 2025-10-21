@@ -167,7 +167,8 @@ export async function createCard(deckKey: string, question: string, answer: stri
     await put(`cards/${deckKey}/index.json`, JSON.stringify({ cards }), {
       access: 'public',
       contentType: 'application/json',
-      token: env.BLOB_READ_WRITE_TOKEN
+      token: env.BLOB_READ_WRITE_TOKEN,
+      allowOverwrite: true
     })
     
     console.log('Card created successfully:', newCard.id)
@@ -201,7 +202,8 @@ export async function updateCard(id: string, fields: { question?: string; answer
       await put(`cards/${deck.key}/index.json`, JSON.stringify({ cards }), {
         access: 'public',
         contentType: 'application/json',
-        token: env.BLOB_READ_WRITE_TOKEN
+        token: env.BLOB_READ_WRITE_TOKEN,
+        allowOverwrite: true
       })
       
       return cards[cardIndex]
@@ -216,7 +218,8 @@ async function initializeData() {
     await put('decks/index.json', JSON.stringify({ decks: DEFAULT_DECKS }), {
       access: 'public',
       contentType: 'application/json',
-      token: env.BLOB_READ_WRITE_TOKEN
+      token: env.BLOB_READ_WRITE_TOKEN,
+      allowOverwrite: true
     })
   } catch (error) {
     console.error('Error initializing data:', error)
@@ -228,7 +231,8 @@ async function initializePatrolCards() {
     await put('cards/patrol/index.json', JSON.stringify({ cards: PATROL_CARDS }), {
       access: 'public',
       contentType: 'application/json',
-      token: env.BLOB_READ_WRITE_TOKEN
+      token: env.BLOB_READ_WRITE_TOKEN,
+      allowOverwrite: true
     })
   } catch (error) {
     console.error('Error initializing patrol cards:', error)
