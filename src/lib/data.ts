@@ -112,6 +112,7 @@ export async function getDeck(key: string): Promise<Deck & { cards: Card[] } | n
 
 export async function getCards(deckKey: string): Promise<Card[]> {
   try {
+    console.log('getCards called for deck:', deckKey, 'at:', new Date().toISOString())
     const blob = await list({ prefix: `cards/${deckKey}/`, token: env.BLOB_READ_WRITE_TOKEN })
     if (blob.blobs.length === 0) {
       // Initialize with patrol cards if this is the patrol deck
@@ -131,8 +132,9 @@ export async function getCards(deckKey: string): Promise<Card[]> {
       return []
     }
     
-    const response = await fetch(cardsBlob.url)
+    const response = await fetch(cardsBlob.url + '?t=' + Date.now())
     const data = await response.json()
+    console.log('Cards loaded from blob:', data.cards?.length || 0, 'cards')
     return data.cards || []
   } catch (error) {
     console.error('Error getting cards:', error)
