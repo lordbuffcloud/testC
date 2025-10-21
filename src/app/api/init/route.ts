@@ -1,8 +1,17 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
+    // Check if DATABASE_URL is available
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json({ 
+        error: 'DATABASE_URL not configured. Please set up Vercel Postgres integration.' 
+      }, { status: 400 })
+    }
+
     // Push the schema to the database
     // This will create tables if they don't exist
     await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "decks" (
