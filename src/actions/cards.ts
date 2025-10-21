@@ -22,7 +22,7 @@ export async function listCards(deckKey: string): Promise<Card[]> {
     orderBy: { createdAt: 'asc' }
   })
   
-  return cards.map(card => ({
+  return cards.map((card: any) => ({
     id: card.id,
     deckKey: card.deckKey,
     question: card.question,
