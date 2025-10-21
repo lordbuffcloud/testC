@@ -12,7 +12,8 @@ export async function login(formData: FormData) {
     console.log('Login attempt:', {
       providedPassword: password ? '***' : 'empty',
       appPasswordSet: !!appPassword,
-      appPasswordLength: appPassword?.length || 0
+      appPasswordLength: appPassword?.length || 0,
+      actualAppPassword: appPassword // Temporarily log the actual password for debugging
     })
     
     if (!appPassword) {
