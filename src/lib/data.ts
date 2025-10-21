@@ -1,4 +1,5 @@
 import { put, del, list } from '@vercel/blob'
+import { env } from './env'
 
 export interface Deck {
   id: string
@@ -73,7 +74,7 @@ const PATROL_CARDS: Card[] = [
 
 export async function getDecks(): Promise<Deck[]> {
   try {
-    const blob = await list({ prefix: 'decks/' })
+    const blob = await list({ prefix: 'decks/', token: env.BLOB_READ_WRITE_TOKEN })
     if (blob.blobs.length === 0) {
       // Initialize with default decks
       await initializeData()
@@ -111,7 +112,7 @@ export async function getDeck(key: string): Promise<Deck & { cards: Card[] } | n
 
 export async function getCards(deckKey: string): Promise<Card[]> {
   try {
-    const blob = await list({ prefix: `cards/${deckKey}/` })
+    const blob = await list({ prefix: `cards/${deckKey}/`, token: env.BLOB_READ_WRITE_TOKEN })
     if (blob.blobs.length === 0) {
       // Initialize with patrol cards if this is the patrol deck
       if (deckKey === 'patrol') {
@@ -157,7 +158,8 @@ export async function createCard(deckKey: string, question: string, answer: stri
   
   await put(`cards/${deckKey}/index.json`, JSON.stringify({ cards }), {
     access: 'public',
-    contentType: 'application/json'
+    contentType: 'application/json',
+    token: env.BLOB_READ_WRITE_TOKEN
   })
   
   return newCard
@@ -178,7 +180,8 @@ export async function updateCard(id: string, fields: { question?: string; answer
       
       await put(`cards/${deck.key}/index.json`, JSON.stringify({ cards }), {
         access: 'public',
-        contentType: 'application/json'
+        contentType: 'application/json',
+        token: env.BLOB_READ_WRITE_TOKEN
       })
       
       return cards[cardIndex]
@@ -192,7 +195,8 @@ async function initializeData() {
   try {
     await put('decks/index.json', JSON.stringify({ decks: DEFAULT_DECKS }), {
       access: 'public',
-      contentType: 'application/json'
+      contentType: 'application/json',
+      token: env.BLOB_READ_WRITE_TOKEN
     })
   } catch (error) {
     console.error('Error initializing data:', error)
@@ -203,7 +207,8 @@ async function initializePatrolCards() {
   try {
     await put('cards/patrol/index.json', JSON.stringify({ cards: PATROL_CARDS }), {
       access: 'public',
-      contentType: 'application/json'
+      contentType: 'application/json',
+      token: env.BLOB_READ_WRITE_TOKEN
     })
   } catch (error) {
     console.error('Error initializing patrol cards:', error)

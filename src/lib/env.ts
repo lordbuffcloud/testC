@@ -1,7 +1,8 @@
 export const env = {
   APP_PASSWORD: process.env.APP_PASSWORD,
   APP_SECRET: process.env.APP_SECRET,
-  DATABASE_URL: process.env.DATABASE_URL
+  DATABASE_URL: process.env.DATABASE_URL,
+  BLOB_READ_WRITE_TOKEN: process.env.clasbyrules_READ_WRITE_TOKEN
 }
 
 // Validate required environment variables only at runtime
