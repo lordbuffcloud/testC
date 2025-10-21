@@ -1,7 +1,14 @@
-'use client'
-
 import type { Metadata } from 'next'
 import './globals.css'
+import LogoutButton from '@/components/LogoutButton'
+
+export const metadata: Metadata = {
+  title: 'Flash Decks',
+  description: 'A minimal flash-card web app for studying',
+  icons: {
+    icon: '/favicon.svg',
+  },
+}
 
 export default function RootLayout({
   children,
@@ -17,15 +24,7 @@ export default function RootLayout({
         <header className="header">
           <div className="container">
             <h1>Flash Decks</h1>
-            <button 
-              onClick={() => {
-                document.cookie = 'logged_in=; path=/; max-age=0'
-                window.location.href = '/simple-login'
-              }}
-              className="logout-btn"
-            >
-              Logout
-            </button>
+            <LogoutButton />
           </div>
         </header>
         <main className="main">
