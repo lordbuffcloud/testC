@@ -1,17 +1,23 @@
 'use client'
 
 import { useState } from 'react'
-import { createCard } from '@/actions/cards'
+import { updateCard } from '@/actions/cards'
 
-interface AddCardModalProps {
-  deckKey: string
-  onClose: () => void
-  onCardAdded: () => void
+interface Card {
+  id: string
+  question: string
+  answer: string
 }
 
-export default function AddCardModal({ deckKey, onClose, onCardAdded }: AddCardModalProps) {
-  const [question, setQuestion] = useState('')
-  const [answer, setAnswer] = useState('')
+interface EditCardModalProps {
+  card: Card
+  onClose: () => void
+  onCardUpdated: () => void
+}
+
+export default function EditCardModal({ card, onClose, onCardUpdated }: EditCardModalProps) {
+  const [question, setQuestion] = useState(card.question)
+  const [answer, setAnswer] = useState(card.answer)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -21,11 +27,11 @@ export default function AddCardModal({ deckKey, onClose, onCardAdded }: AddCardM
     setError('')
 
     try {
-      await createCard(deckKey, question, answer)
-      onCardAdded()
+      await updateCard(card.id, { question, answer })
+      onCardUpdated()
       onClose()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create card')
+      setError(err instanceof Error ? err.message : 'Failed to update card')
     } finally {
       setLoading(false)
     }
@@ -53,7 +59,7 @@ export default function AddCardModal({ deckKey, onClose, onCardAdded }: AddCardM
         maxHeight: '90vh',
         overflow: 'auto'
       }}>
-        <h2>Add New Card</h2>
+        <h2>Edit Card</h2>
         
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: '20px' }}>
@@ -98,7 +104,7 @@ export default function AddCardModal({ deckKey, onClose, onCardAdded }: AddCardM
               placeholder="Enter the answer (optional)..."
             />
             <small style={{ color: '#666', fontSize: '12px' }}>
-              Leave blank if you want to add the answer later
+              Leave blank if you want to remove the answer
             </small>
           </div>
 
@@ -136,14 +142,14 @@ export default function AddCardModal({ deckKey, onClose, onCardAdded }: AddCardM
               disabled={loading || !question.trim()}
               style={{
                 padding: '10px 20px',
-                backgroundColor: loading ? '#6c757d' : '#007bff',
+                backgroundColor: loading ? '#6c757d' : '#28a745',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
                 cursor: loading ? 'not-allowed' : 'pointer'
               }}
             >
-              {loading ? 'Adding...' : 'Add Card'}
+              {loading ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
         </form>

@@ -16,13 +16,13 @@ export async function listCards(deckKey: string) {
   }
 }
 
-export async function createCard(deckKey: string, question: string, answer: string) {
+export async function createCard(deckKey: string, question: string, answer: string = '') {
   try {
     const card = await prisma.card.create({
       data: {
         deckKey,
         question: question.trim(),
-        answer: answer.trim()
+        answer: answer.trim() || '' // Allow empty answers
       }
     })
     return card
@@ -39,7 +39,7 @@ export async function updateCard(id: string, fields: { question?: string; answer
       data: {
         ...fields,
         question: fields.question?.trim(),
-        answer: fields.answer?.trim()
+        answer: fields.answer?.trim() || '' // Allow empty answers
       }
     })
     return card
