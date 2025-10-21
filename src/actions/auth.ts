@@ -6,6 +6,8 @@ import { createSession, clearSession } from '@/lib/session'
 
 export async function login(formData: FormData) {
   try {
+    console.log('=== LOGIN ACTION START ===')
+    
     const password = formData.get('password') as string
     const hardcodedPassword = 'clasby'
     
@@ -32,7 +34,12 @@ export async function login(formData: FormData) {
       throw new Error('Invalid password')
     }
     
+    console.log('Password match successful, creating session...')
+    
+    // Test session creation
     const cookie = createSession()
+    console.log('Session created:', cookie.substring(0, 50) + '...')
+    
     const cookieStore = await cookies()
     cookieStore.set('__session', cookie.split('=')[1].split(';')[0], {
       httpOnly: true,
@@ -41,9 +48,12 @@ export async function login(formData: FormData) {
       maxAge: 24 * 60 * 60 // 24 hours
     })
     
+    console.log('Cookie set, redirecting...')
     redirect('/decks')
+    
   } catch (error) {
     console.error('Login error:', error)
+    console.log('=== LOGIN ACTION END ===')
     // Redirect back to login with error
     redirect('/login?error=1')
   }
