@@ -7,6 +7,9 @@ export default function CookieTest() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return
+    
     // Check if logged in cookie exists
     const cookies = document.cookie.split(';')
     const loggedInCookie = cookies.find(cookie => cookie.trim().startsWith('logged_in='))
@@ -19,12 +22,14 @@ export default function CookieTest() {
   }, [])
 
   const clearCookie = () => {
+    if (typeof window === 'undefined') return
     document.cookie = 'logged_in=; path=/; max-age=0'
     setCookieValue('')
     setIsLoggedIn(false)
   }
 
   const setCookie = () => {
+    if (typeof window === 'undefined') return
     document.cookie = 'logged_in=true; path=/; max-age=86400'
     setCookieValue('true')
     setIsLoggedIn(true)
@@ -38,7 +43,7 @@ export default function CookieTest() {
         <h3>Cookie Status:</h3>
         <p><strong>Cookie Value:</strong> {cookieValue || 'Not set'}</p>
         <p><strong>Is Logged In:</strong> {isLoggedIn ? 'Yes' : 'No'}</p>
-        <p><strong>All Cookies:</strong> {document.cookie || 'None'}</p>
+        <p><strong>All Cookies:</strong> {typeof window !== 'undefined' ? document.cookie || 'None' : 'Loading...'}</p>
       </div>
 
       <div style={{ marginBottom: '20px' }}>
