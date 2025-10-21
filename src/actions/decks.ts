@@ -1,6 +1,6 @@
 'use server'
 
-import { getDecks, getDeck } from '@/lib/data'
+import { getDecks, getDeck as getDeckData } from '@/lib/data'
 
 export async function listDecks() {
   try {
@@ -24,7 +24,7 @@ export async function listDecks() {
 
 export async function getDeck(key: string) {
   try {
-    const deck = await getDeck(key)
+    const deck = await getDeckData(key)
     if (!deck) return null
     
     return {

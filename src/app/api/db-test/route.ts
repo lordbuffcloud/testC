@@ -1,51 +1,50 @@
 import { NextResponse } from 'next/server'
-import { env } from '@/lib/env'
+import { getDecks } from '@/lib/data'
 
 export async function GET() {
   const result = {
     timestamp: new Date().toISOString(),
     environment: {
-      hasDatabaseUrl: !!env.DATABASE_URL,
-      databaseUrlPrefix: env.DATABASE_URL?.substring(0, 20) + '...' || 'not set',
       nodeEnv: process.env.NODE_ENV,
+      vercelEnv: process.env.VERCEL_ENV,
     },
     tests: {
-      prismaImport: { status: 'pending', error: null as string | null },
-      prismaConnection: { status: 'pending', error: null as string | null },
-      prismaQuery: { status: 'pending', error: null as string | null },
+      blobImport: { status: 'pending', error: null as string | null },
+      blobConnection: { status: 'pending', error: null as string | null },
+      blobQuery: { status: 'pending', error: null as string | null },
     }
   }
 
-  // Test 1: Import Prisma
+  // Test 1: Import Blob Storage
   try {
-    const { prisma } = await import('@/lib/prisma')
-    result.tests.prismaImport.status = 'success'
+    const { put, list } = await import('@vercel/blob')
+    result.tests.blobImport.status = 'success'
   } catch (error) {
-    result.tests.prismaImport.status = 'error'
-    result.tests.prismaImport.error = error instanceof Error ? error.message : 'Unknown error'
+    result.tests.blobImport.status = 'error'
+    result.tests.blobImport.error = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json(result, { status: 500 })
   }
 
-  // Test 2: Prisma Connection
+  // Test 2: Blob Storage Connection
   try {
-    const { prisma } = await import('@/lib/prisma')
-    await prisma.$connect()
-    result.tests.prismaConnection.status = 'success'
+    const { list } = await import('@vercel/blob')
+    await list({ prefix: 'test/' })
+    result.tests.blobConnection.status = 'success'
   } catch (error) {
-    result.tests.prismaConnection.status = 'error'
-    result.tests.prismaConnection.error = error instanceof Error ? error.message : 'Unknown error'
+    result.tests.blobConnection.status = 'error'
+    result.tests.blobConnection.error = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json(result, { status: 500 })
   }
 
-  // Test 3: Simple Query
+  // Test 3: Data Query
   try {
-    const { prisma } = await import('@/lib/prisma')
-    const testResult = await prisma.$queryRaw`SELECT 1 as test`
-    result.tests.prismaQuery.status = 'success'
-    result.tests.prismaQuery.error = null
+    const decks = await getDecks()
+    result.tests.blobQuery.status = 'success'
+    result.tests.blobQuery.error = null
+    result.tests.blobQuery.data = { deckCount: decks.length }
   } catch (error) {
-    result.tests.prismaQuery.status = 'error'
-    result.tests.prismaQuery.error = error instanceof Error ? error.message : 'Unknown error'
+    result.tests.blobQuery.status = 'error'
+    result.tests.blobQuery.error = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json(result, { status: 500 })
   }
 

@@ -1,6 +1,6 @@
 'use server'
 
-import { getCards, createCard, updateCard } from '@/lib/data'
+import { getCards, createCard as createCardData, updateCard as updateCardData } from '@/lib/data'
 
 export async function listCards(deckKey: string) {
   try {
@@ -22,7 +22,7 @@ export async function listCards(deckKey: string) {
 
 export async function createCard(deckKey: string, question: string, answer: string = '') {
   try {
-    const card = await createCard(deckKey, question.trim(), answer.trim() || '')
+    const card = await createCardData(deckKey, question.trim(), answer.trim() || '')
     return {
       id: card.id,
       deckKey: card.deckKey,
@@ -40,7 +40,7 @@ export async function createCard(deckKey: string, question: string, answer: stri
 
 export async function updateCard(id: string, fields: { question?: string; answer?: string }) {
   try {
-    const card = await updateCard(id, fields)
+    const card = await updateCardData(id, fields)
     if (!card) throw new Error('Card not found')
     
     return {
