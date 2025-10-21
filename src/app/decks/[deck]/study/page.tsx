@@ -7,25 +7,26 @@ import StudyCard from '@/components/StudyCard'
 export const dynamic = 'force-dynamic'
 
 interface StudyPageProps {
-  params: {
+  params: Promise<{
     deck: string
-  }
+  }>
 }
 
 export default async function StudyPage({ params }: StudyPageProps) {
-  const deck = await getDeck(params.deck)
+  const { deck } = await params
+  const deckData = await getDeck(deck)
   
-  if (!deck) {
+  if (!deckData) {
     notFound()
   }
   
-  const cards = await listCards(params.deck)
+  const cards = await listCards(deck)
 
   return (
     <div>
       <div className="study-header">
-        <h1>Study {deck.name}</h1>
-        <Link href={`/decks/${params.deck}`} className="btn btn-secondary">
+        <h1>Study {deckData.name}</h1>
+        <Link href={`/decks/${deck}`} className="btn btn-secondary">
           Back to Deck
         </Link>
       </div>

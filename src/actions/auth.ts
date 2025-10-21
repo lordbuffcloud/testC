@@ -1,6 +1,7 @@
 'use server'
 
 import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { createSession, clearSession } from '@/lib/session'
 import { env } from '@/lib/env'
 
@@ -12,14 +13,20 @@ export async function login(formData: FormData) {
   }
   
   const cookie = createSession()
+  const cookieStore = await cookies()
+  cookieStore.set('__session', cookie.split('=')[1].split(';')[0], {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax',
+    maxAge: 24 * 60 * 60 // 24 hours
+  })
   
-  // Set cookie and redirect
   redirect('/decks')
 }
 
 export async function logout() {
-  const cookie = clearSession()
+  const cookieStore = await cookies()
+  cookieStore.delete('__session')
   
-  // Clear cookie and redirect
   redirect('/login')
 }
