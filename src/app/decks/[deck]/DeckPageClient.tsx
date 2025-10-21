@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import AddCardModal from '@/components/AddCardModal'
-import EditCardModal from '@/components/EditCardModal'
+import SimpleAddCardModal from '../../../components/SimpleAddCardModal'
+import EditCardModal from '../../../components/EditCardModal'
 
 interface Card {
   id: string
@@ -130,7 +130,7 @@ export default function DeckPageClient({ deckData }: DeckPageClientProps) {
       </div>
 
       {showAddModal && (
-        <AddCardModal
+        <SimpleAddCardModal
           deckKey={deckData.key}
           onClose={() => setShowAddModal(false)}
           onCardAdded={handleCardAdded}
